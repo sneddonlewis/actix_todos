@@ -63,7 +63,7 @@ function apiCall(url, method) {
  */
 function editItem() {
     let title = this.id.replaceAll("-", " ").replace("edit ", "");
-    let call = apiCall("/item/edit", "PUT");
+    let call = apiCall("api/item", "PUT");
     let json = {
         "title": title,
         "status": "done"
@@ -77,7 +77,7 @@ function editItem() {
  */
 function deleteItem() {
     let title = this.id.replaceAll("-", " ").replace("delete ", "");
-    let call = apiCall("/item/delete", "POST");
+    let call = apiCall("api/item", "DELETE");
     let json = {
         "title": title,
         "status": "done"
@@ -90,7 +90,7 @@ function deleteItem() {
  * Calls the get items API.
  */
 function getItems() {
-    let call = apiCall("/item/get", 'GET');
+    let call = apiCall("api/item", 'GET');
     call.send()
 }
 
@@ -105,7 +105,7 @@ document.getElementById("create-button").addEventListener(
  */
 function createItem() {
     let title = document.getElementById("name");
-    let call = apiCall("/item/create/" + title.value, "POST");
+    let call = apiCall("api/item/" + title.value, "POST");
     call.send();
     document.getElementById("name").value = null;
 }
