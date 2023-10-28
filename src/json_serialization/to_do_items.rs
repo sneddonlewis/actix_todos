@@ -1,8 +1,7 @@
 use std::vec::Vec;
 
-use actix_web::{Responder, Error, HttpResponse, HttpRequest};
+use actix_web::{Responder, HttpResponse, HttpRequest, body::BoxBody};
 use serde::Serialize;
-use futures::future::{ready, Ready};
 
 use crate::to_do::ItemTypes;
 use crate::to_do::structs::base::Base;
@@ -54,20 +53,18 @@ impl ToDoItems {
 }
 
 impl Responder for ToDoItems {
-    type Error = Error;
-    type Future = Ready<Result<HttpResponse, Error>>;
+    type Body = BoxBody;
 
-    /// This function gets fired when the struct is being returned in an actix view.
-    ///
-    /// # Arguments
-    /// * _req (&HttpRequest): the request belonging to the view
-    ///
-    /// # Returns
-    /// * (Self::Future): a OK HTTP response with the serialized struct in the body
-    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
-        let body = serde_json::to_string(&self).unwrap();
-        ready(Ok(HttpResponse::Ok()
-            .content_type("application/json")
-            .body(body)))
+    fn respond_to(self, _req: &HttpRequest) -> HttpResponse<Self::Body> {
+        let body = match serde_json::to_string(&self) {
+            Ok(b) => b,
+            Err(e) => {
+                // Handle the error based on your application's needs.
+                // This example will return an error response.
+                return HttpResponse::InternalServerError().body(format!("Serialization error: {}", e));
+            }
+        };
+
+        HttpResponse::Ok().content_type("application/json").body(body)
     }
 }
