@@ -15,6 +15,11 @@ docker-compose up
 ```
 Optional `-d` flag for daemon  
 
+Optionally connect to the containerised postgres db  
+```
+docker exec -it to-do-postgres psql -U root to_do
+```
+
 You've then got `docker-compose stop` to stop the container and `docker-compose down` to delete the container
 
 Run the app
